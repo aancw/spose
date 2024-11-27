@@ -11,10 +11,10 @@ init(autoreset=True)
 class Spose:
     def __init__(self):
         parser = argparse.ArgumentParser(
-            prog='Spose by Petruknisme',
+            add_help=True,
             description='Squid Pivoting Open Port Scanner'
         )
-        parser.add_argument("--proxy", help="Define proxy address URL (http://xxx:3128)",
+        parser.add_argument("--proxy", help="Define proxy address URL (http://x.x.x.x:3128)",
                             action="store", dest='proxy', required=True)
         parser.add_argument("--target", help="Define target IP behind proxy",
                             action="store", dest='target', required=True)
@@ -22,18 +22,23 @@ class Spose:
                             action="store", dest='ports')
         parser.add_argument("--allports", help="[Optional] Scan all 65535 TCP ports behind proxy",
                             action="store_true", dest='allports')
-        results = parser.parse_args()
+        
+        if len(sys.argv) == 1:
+            parser.print_help()
+            sys.exit(1)
+        
+        options = parser.parse_args()
 
-        target = results.target
-        proxy = results.proxy
+        target = options.target
+        proxy = options.proxy
 
         # Determine the list of ports to scan
-        if results.allports:
+        if options.allports:
             ports = range(1, 65536)  # All TCP ports
             print(f"{Fore.YELLOW}Scanning all 65,535 TCP ports{Style.RESET_ALL}")
-        elif results.ports:
-            ports = [int(port.strip()) for port in results.ports.split(",")]
-            print(f"{Fore.YELLOW}Scanning specified ports: {results.ports}{Style.RESET_ALL}")
+        elif options.ports:
+            ports = [int(port.strip()) for port in options.ports.split(",")]
+            print(f"{Fore.YELLOW}Scanning specified ports: {options.ports}{Style.RESET_ALL}")
         else:
             ports = [21, 22, 23, 25, 53, 69, 80, 109, 110, 123, 137, 138, 139, 143, 156, 389, 443,
                      546, 547, 995, 993, 2086, 2087, 2082, 2083, 3306, 8080, 8443, 10000]
