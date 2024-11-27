@@ -15,10 +15,10 @@ class Spose:
             description='Squid Pivoting Open Port Scanner'
         )
         parser.add_argument("--proxy", help="Define proxy address URL (http://xxx:3128)",
-                            action="store", dest='proxy')
+                            action="store", dest='proxy', required=True)
         parser.add_argument("--target", help="Define target IP behind proxy",
-                            action="store", dest='target')
-        parser.add_argument("--ports", help="Define target ports behind proxy (comma-separated)",
+                            action="store", dest='target', required=True)
+        parser.add_argument("--ports", help="[Optional] Define target ports behind proxy (comma-separated)",
                             action="store", dest='ports')
         results = parser.parse_args()
 
