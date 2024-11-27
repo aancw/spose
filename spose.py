@@ -20,27 +20,34 @@ class Spose:
                             action="store", dest='target', required=True)
         parser.add_argument("--ports", help="[Optional] Define target ports behind proxy (comma-separated)",
                             action="store", dest='ports')
+        parser.add_argument("--allports", help="[Optional] Scan all 65535 TCP ports behind proxy",
+                            action="store_true", dest='allports')
         results = parser.parse_args()
-
-        if results.target is None or results.proxy is None:
-            parser.print_help()
-            sys.exit()
 
         target = results.target
         proxy = results.proxy
-        if results.ports is None:
+
+        # Determine the list of ports to scan
+        if results.allports:
+            ports = range(1, 65536)  # All TCP ports
+            print(f"{Fore.YELLOW}Scanning all 65,535 TCP ports{Style.RESET_ALL}")
+        elif results.ports:
+            ports = [int(port.strip()) for port in results.ports.split(",")]
+            print(f"{Fore.YELLOW}Scanning specified ports: {results.ports}{Style.RESET_ALL}")
+        else:
             ports = [21, 22, 23, 25, 53, 69, 80, 109, 110, 123, 137, 138, 139, 143, 156, 389, 443,
                      546, 547, 995, 993, 2086, 2087, 2082, 2083, 3306, 8080, 8443, 10000]
-        else:
-            ports = [int(port.strip()) for port in results.ports.split(",")]
+            print(f"{Fore.YELLOW}Scanning default common ports{Style.RESET_ALL}")
 
         print(f"{Fore.CYAN}Using proxy address {proxy}{Style.RESET_ALL}")
 
+        # Set up proxy
         proxy_handler = urllib.request.ProxyHandler({'http': proxy})
         opener = urllib.request.build_opener(proxy_handler)
         urllib.request.install_opener(opener)
 
-        for port in sorted(ports):
+        # Scan the ports
+        for port in ports:
             try:
                 url = f"http://{target}:{port}"
                 with urllib.request.urlopen(url) as response:
