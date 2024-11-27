@@ -7,7 +7,7 @@ Detecting open port behind squid proxy for CTF and pentest purpose using http pr
 
 ```
 ❯ python3 ./spose.py --help
-usage: Spose by Petruknisme [-h] --proxy PROXY --target TARGET [--ports PORTS]
+usage: Spose by Petruknisme [-h] --proxy PROXY --target TARGET [--ports PORTS] [--allports]
 
 Squid Pivoting Open Port Scanner
 
@@ -16,6 +16,7 @@ options:
   --proxy PROXY    Define proxy address URL (http://xxx:3128)
   --target TARGET  Define target IP behind proxy
   --ports PORTS    [Optional] Define target ports behind proxy (comma-separated)
+  --allports       [Optional] Scan all 65535 TCP ports behind proxy
 ```
 
 ## VulnHub VM
